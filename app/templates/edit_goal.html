@@ -43,7 +43,11 @@
 
     <!-- <form method="post" action="/delete_goal"> -->
         <div class=" text-container">
-      
+            {% if is_goals_set %}
+                <h1 style="color: white;">You have a Goal Selected - {{selected_goal}}</h1>
+            {% else %}
+                <h1 style="color: white;">You have No Goal Selected</h1>
+            {% endif %}
             <button type="button"  class="btn btn-success float-right"
                 data-toggle="modal" data-target="#mymodal">Add Goal</button> </h2>
             <table class="table table-hover table-dark">
@@ -60,7 +64,13 @@
                     <td>
                          <a href = "edit_goal/update/{{goal.id}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{goal.id}}">Edit</a>
                          <a href = "edit_goal/delete/{{goal.id}}" class="btn btn-danger btn-xs" onclick="return confirm ('Are you sure you want to Delete ?')">Delete</a>
-                    </td>
+                         {% if selected_goal_id==goal.id %}
+                            <a href = "edit_goal/deselect/{{goal.id}}" class="btn btn-primary btn-xs" onclick="return confirm ('Do you want to deselect {{goal.name}} ?')">Deselect</a>
+                         {% endif %}
+                         {% if not is_goals_set %}
+                            <a href = "edit_goal/select/{{goal.id}}" class="btn btn-primary btn-xs" onclick="return confirm ('Do you want to select {{goal.name}} ?')">Select</a>
+                         {% endif %}
+                        </td>
                 </tr>
 
             <div id="modaledit{{goal.id}}" class="modal fade" role="dialog">

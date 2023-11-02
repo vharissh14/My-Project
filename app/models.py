@@ -20,3 +20,4 @@ class Goal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     value = db.Column(db.Float, nullable=False)
+    selected = db.Column(db.Integer, nullable=False)

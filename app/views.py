@@ -12,7 +12,11 @@ def home():
     total_expenditure = db.session.query(db.func.sum(Expenditure.value)).scalar()
     all_goals = Goal.query.all()
     total_goal_value = sum(goal.value for goal in all_goals)
-    return render_template('home.html', total_income=total_income, total_expenditure=total_expenditure, total_goal_value=total_goal_value)
+    goal_set = Goal.query.filter_by(selected=1).count()
+    if goal_set == 1:
+        selected_goal = Goal.query.filter_by(selected=1).first()
+        return render_template('home.html', total_income=total_income, total_expenditure=total_expenditure, total_goal_value=total_goal_value, is_goals_set=True, selected_goal=selected_goal.name, selected_goal_id=selected_goal.id, selected_goal_value=selected_goal.value)
+    return render_template('home.html', total_income=total_income, total_expenditure=total_expenditure, total_goal_value=total_goal_value, is_goals_set=False, selected_goal=None, selected_goal_id=None, selected_goal_value=None)
 
 #to calculate all income in the income page
 @app.route('/income')
@@ -32,8 +36,11 @@ def expenditures():
 @app.route('/edit_goal')
 def edit_goals():
     all_goals = Goal.query.all()
-    print(all_goals)
-    return render_template('edit_goal.html', all_goals=all_goals)
+    goal_set = Goal.query.filter_by(selected=1).count()
+    if goal_set == 1:
+        selected_goal = Goal.query.filter_by(selected=1).first()
+        return render_template('edit_goal.html', all_goals=all_goals, is_goals_set=True, selected_goal=selected_goal.name, selected_goal_id=selected_goal.id)
+    return render_template('edit_goal.html', all_goals=all_goals, is_goals_set=False, selected_goal=None, selected_goal_id=None)
 
 @app.route('/add_income', methods=['GET', 'POST'])
 def add_income():
@@ -210,3 +217,18 @@ def insert_goal():
         db.session.add(my_data)
         db.session.commit()
         return redirect(url_for('edit_goal'))
+
+
+@app.route('/edit_goal/deselect/<id>',methods = ['GET','POST'])
+def deselect_goal(id):
+    goal_data = Goal.query.get(int(id))
+    goal_data.selected = 0
+    db.session.commit()
+    return redirect(url_for('edit_goals'))
+
+@app.route('/edit_goal/select/<id>',methods = ['GET','POST'])
+def select_goal(id):
+    goal_data = Goal.query.get(int(id))
+    goal_data.selected = 1
+    db.session.commit()
+    return redirect(url_for('edit_goals'))

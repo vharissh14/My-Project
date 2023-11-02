@@ -53,6 +53,12 @@
             <p>Total Income: {{ total_income }}</p>
             <p>Total Expenditure: {{ total_expenditure }}</p>
             <p>Goal Value: {{ total_goal_value }}</p>    
+            {% if is_goals_set %}
+                <p style="color: white;">Goal Name: {{selected_goal}}</p>
+                <p style="color: white;">Goal Value: {{selected_goal_value}}</p>
+            {% else %}
+                <p style="color: white;">You have No Active Goal</p>
+            {% endif %}
         </div>
     </div>
         
